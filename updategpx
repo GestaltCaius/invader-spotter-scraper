@@ -1,0 +1,85 @@
+import csv
+from gpx import GPX, Waypoint
+
+## in the gpx file, <sym> tag meaning : already flashed invaders are all "Dark_Green", unflashed invaders can be "None" (<50pts) or "Yellow" (50pts) or "Pink" (100pts) or "Dark_Red" (Destroyed) or "Brown" (Damaged)
+
+#construct dicts from invaders-updated.csv (created by scraping script)
+        
+invadercsv = csv.DictReader(open('data/invaders-with-locations.csv'))
+invaderstatus={}
+invaderpoints={}
+invaderurl={}
+invaderlon={}
+invaderlat={}
+
+
+    
+#read invader.gpx map and update it
+gpx = GPX.from_file("data/invader-input.gpx") 
+wpt=gpx.waypoints
+
+mapdict={
+    wpt[i].name.split(' ')[0]:wpt[i].sym
+    for i in range(0,len(wpt))
+    }
+
+for row in invadercsv:
+    invaderstatus[row['name']] = row['status_description']
+    invaderpoints[row['name']] = row['points']
+    invaderurl[row['name']] = row['picture_url']
+    if row['lon']!='': 
+        invaderlon[row['name']] = row['lon'] 
+    else: 
+        invaderlon[row['name']]='0'
+    if row['lat']!='': 
+        invaderlat[row['name']] = row['lat'] 
+    else: 
+        invaderlat[row['name']]='0'
+    if tuple({row['name']})[0] not in mapdict.keys():
+            addwpt = Waypoint()
+            addwpt.name = row['name']
+            addwpt.desc = 'points='+row['points']+' image='+row['picture_url']
+            if row['points']=='100': addwpt.sym = 'Pink' 
+            if row['points']=='50': addwpt.sym = 'Yellow' 
+            if row['status_description']=='Dégradé' or row['status_description']=='Un peu dégradé' :addwpt.sym = 'Brown'
+            if row['status_description']=='Détruit !' or row['status_description']=='Inconnu': addwpt.sym = 'Dark_Red'
+            addwpt.lat=row['lat']
+            if row['lon']!='': 
+                addwpt.lon=row['lon'] 
+            else: 
+                addwpt.lon='0'
+            if row['lat']!='': 
+                addwpt.lat=row['lat'] 
+            else: 
+                addwpt.lat='0'
+            print(addwpt)
+            wpt.append(addwpt)
+
+
+
+for key in invaderstatus:
+    try:
+        #add points and url to all entries in gpx for which there is info in the csv file
+        for i in range(0,len(wpt)):
+            if wpt[i].name==key:
+                wpt[i].desc='points='+invaderpoints[key]+' image='+invaderurl[key] 
+            
+
+        #update invaders that have been restored and highlight all high points invaders that have not been flashed yet
+        if (mapdict[key]=="Dark_Red" or mapdict[key]=="None") and invaderstatus[key]=="OK":
+            for i in range(0,len(wpt)):
+                if wpt[i].name==key :
+                    wpt[i].sym="None"
+                    if invaderpoints[key]=='100': wpt[i].sym='Pink'
+                    if invaderpoints[key]=='50': wpt[i].sym='Yellow'
+
+        #updated destroyed or not flashable invaders that have not been flashed yet
+        if (mapdict[key]=="None" or mapdict[key]=="Yellow" or mapdict[key]=="Pink") and invaderstatus[key]!="OK":
+            for i in range(0,len(wpt)):
+                if wpt[i].name==key:
+                    if invaderstatus[key]=="Détruit !" : wpt[i].sym="Dark_Red"
+                    if invaderstatus[key]=='Dégradé' : wpt[i].sym='Brown'
+        
+    except KeyError:
+        pass          
+gpx.to_file("data/invader-updated.gpx")
