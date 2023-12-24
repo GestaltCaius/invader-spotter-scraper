@@ -24,12 +24,20 @@ INVADER_STATUS_DESCRIPTION_PATTERN = r'Dernier état connu : <img.*> (.*)<br.?>'
 # Order is important there, the first source for a given Invader is the ground
 # truth.
 SOURCE_GEOJSON = [
+    # https://umap.openstreetmap.fr/fr/map/spacer-invaders-ods_848151
+    'https://umap.openstreetmap.fr/fr/datalayer/848151/2648604/',
     # https://umap.openstreetmap.fr/fr/map/dump-positions-des-invaders-18122024_1000818
     'https://umap.openstreetmap.fr/fr/datalayer/1000818/3083389/',
     # https://umap.openstreetmap.fr/fr/map/space-invaders_425001
     'https://umap.openstreetmap.fr/fr/datalayer/425001/1180599/',
     # https://umap.openstreetmap.fr/fr/map/invader-world_952127
     'https://umap.openstreetmap.fr/fr/datalayer/952127/2923771/',
+    # https://umap.openstreetmap.fr/fr/map/flash-invaders-el_883011
+    'https://umap.openstreetmap.fr/fr/datalayer/883011/2683553/',
+    'https://umap.openstreetmap.fr/fr/datalayer/883011/2688765/',
+    'https://umap.openstreetmap.fr/fr/datalayer/883011/2683552/',
+    'https://umap.openstreetmap.fr/fr/datalayer/883011/2683551/'
+    # Add later? (different naming scheme) https://umap.openstreetmap.fr/fr/map/space-invaders-map-france_879063
 ]
 
 
