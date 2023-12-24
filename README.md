@@ -30,6 +30,15 @@ This will generate 3 files:
 * `data/all-invaders.kml`, a ready to import KML file with all the invaders as
     bookmarks/placemarks.
 
+### Updating a gpx file for InRoute
+Provided you have a ./data/invader-input.gpx file of your flashed invader, you can run
+
+```
+./.venv/bin/python updategpx.py
+```
+
+This will keep all flashed invaders and add new locations / update status from scraped info, and output a new file to upload in InRoute.
+
 ### Generating a KML of all remaining invaders
 
 Provided you have a KML file of your flashed invaders (or a GPX and convert it
