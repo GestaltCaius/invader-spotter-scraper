@@ -1,4 +1,5 @@
-requests
 beautifulsoup4
-typing
-gpx
+fastkml
+lxml
+prettytable
+requests
